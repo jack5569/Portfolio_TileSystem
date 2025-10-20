@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace GridSystem
+namespace Game.GridSystem
 {
     [CreateAssetMenu(menuName = "Data/Tile")]
     public partial class TileData : ScriptableObject

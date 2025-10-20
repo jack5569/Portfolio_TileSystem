@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace GridSystem
+namespace Game.GridSystem
 {
     public class CellDataOutputter : MonoBehaviour
     {

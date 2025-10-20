@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace GridSystem
+namespace Game.GridSystem
 {
     public class RuntimeCellInfo
     {

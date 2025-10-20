@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace GridSystem
+namespace Game.GridSystem
 {
     public partial class CellData
     {

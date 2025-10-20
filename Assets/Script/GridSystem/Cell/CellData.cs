@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace GridSystem
+namespace Game.GridSystem
 {
     [CreateAssetMenu(menuName = "Data/Cell")]
     public partial class CellData : ScriptableObject

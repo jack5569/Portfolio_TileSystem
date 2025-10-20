@@ -1,24 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace GridSystem
+namespace Game.GridSystem
 {
     public class GridSystem : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Grid _grid;
+        [SerializeField] private CustomGrid _grid;
 
-        [Header("Data")]
-        [SerializeField] private GridData _dataToLoad;
-
-        #region MonoBehaviour
-
-        private void Start()
+        public void Load(GridData data)
         {
-            _grid.Load(_dataToLoad);
+            _grid.Load(data);
         }
-
-        #endregion
     }
 }

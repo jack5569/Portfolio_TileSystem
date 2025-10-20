@@ -2,7 +2,7 @@ using NaughtyAttributes;
 using UnityEditor;
 using System.IO;
 
-namespace GridSystem
+namespace Game.GridSystem
 {
     public partial class GridData
     {

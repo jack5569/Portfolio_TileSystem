@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using GridSystem;
 using UnityEngine;
 
-namespace GridSystem
+namespace Game.GridSystem
 {
     [CreateAssetMenu(menuName = "Data/Grid")]
     public partial class GridData : ScriptableObject
