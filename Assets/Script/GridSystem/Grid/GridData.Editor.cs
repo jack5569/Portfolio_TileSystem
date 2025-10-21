@@ -1,11 +1,22 @@
 using NaughtyAttributes;
 using UnityEditor;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Game.GridSystem
 {
     public partial class GridData
     {
+        public void Editor_SetDatas(IEnumerable<CellData> datas)
+        {
+            _dataList.Clear();
+            _dataList.AddRange(datas);
+
+            // Save
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssetIfDirty(this);
+        }
+        
         [Button("Assign Datas")]
         private void Editor_AssignDatas()
         {
@@ -25,7 +36,7 @@ namespace Game.GridSystem
                 CellData data = AssetDatabase.LoadAssetAtPath<CellData>(path);
                 _dataList.Add(data);
             }
-            
+
             // Save
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssetIfDirty(this);
