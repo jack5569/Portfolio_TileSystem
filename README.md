@@ -3,10 +3,10 @@
 A modular, data-driven grid system featuring a custom editor tool for layout creation and a runtime snapping system with overlap detection.
 
 ## Demo
-![Editor Demo](/Medias/EditorDemo.mp4)
+![Editor Demo](/Medias/EditorDemo.gif)
 Design and export grid layouts directly as reusable data assets.
 
-![Runtime Demo](/Medias/RuntimeDemo.mp4)
+![Runtime Demo](/Medias/RuntimeDemo.gif)
 Demonstrates runtime loading, snapping behavior, and overlap detection.
 
 ## How to Run
