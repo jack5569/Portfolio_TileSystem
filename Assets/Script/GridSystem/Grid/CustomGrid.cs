@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.Tilemaps;
 
 namespace Game.GridSystem
@@ -55,55 +56,73 @@ namespace Game.GridSystem
         {
             RevertPlaceableEditModeAffectedCells();
 
-            if (IsCellExisting(placeable.CellPosition))
+            HashSet<Vector2Int> placeableCellSet = new HashSet<Vector2Int>();
+            HashSet<Vector2Int> unplacableCellSet = new HashSet<Vector2Int>();
+            foreach (Vector2Int cell in placeable.GetOccupiedCells())
             {
-                // Overlapping check
-                bool isNotOccupied = true;
+                Vector2Int visualCellPosition = GetVisualCellPosition(cell);
+
+                // Skip if the cell doesn't even exist
+                if (!IsCellExisting(GetVisualCellPosition(cell)))
+                    continue;
+
+                placeableCellSet.Add(visualCellPosition);
+
+                // Overlapping
                 foreach (GridPlaceable existingPlaceable in _listPlaceables)
                 {
-                    if (placeable.CellPosition == existingPlaceable.CellPosition)
-                        isNotOccupied = false;
+                    if (placeable.IsOverlappingWith(existingPlaceable))
+                    {
+                        if (existingPlaceable.GetOccupiedCells().Contains(cell))
+                        {
+                            placeableCellSet.Remove(visualCellPosition);
+                            unplacableCellSet.Add(visualCellPosition);
+                            continue;
+                        }
+                    }
                 }
-
-                Vector2Int visualCellPosition = GetVisualCellPosition(placeable.CellPosition);
-                _tilemap.SetTile(visualCellPosition.ToVector3Int(), null);
-                _tilemapHighlight.SetTile(visualCellPosition.ToVector3Int(), isNotOccupied ? _placeableTile : _unplaceableTile);
-                _listPlaceableEditModeAffectedCell.Add(visualCellPosition);
             }
+
+            foreach (Vector2Int cell in placeableCellSet)
+            {
+                _tilemap.SetTile(cell.ToVector3Int(), null);
+                _tilemapHighlight.SetTile(cell.ToVector3Int(), _placeableTile);
+            }
+            foreach (Vector2Int cell in unplacableCellSet)
+            {
+                _tilemap.SetTile(cell.ToVector3Int(), null);
+                _tilemapHighlight.SetTile(cell.ToVector3Int(), _unplaceableTile);
+            }
+            _listPlaceableEditModeAffectedCell.AddRange(placeableCellSet);
+            _listPlaceableEditModeAffectedCell.AddRange(unplacableCellSet);
         }
 
         public void HandlePlaceableEditModeConfirmPlaceablePosition(GridPlaceable placeable)
         {
             RevertPlaceableEditModeAffectedCells();
             if (IsPlaceable(placeable))
-            {
                 _listPlaceables.Add(placeable);
-            }
             else
-            {
                 Destroy(placeable.gameObject);
-            }
         }
 
         #endregion
 
         #region Private methods
 
-        private bool IsCellExisting(Vector2Int cellPosition) { return _dictionaryCellInfo.ContainsKey(GetVisualCellPosition(cellPosition)); }
+        private bool IsCellExisting(Vector2Int cellPosition) { return _dictionaryCellInfo.ContainsKey(cellPosition); }
         private Vector2Int GetVisualCellPosition(Vector2Int cellPosition) { return cellPosition - Vector2Int.one; }
 
         private bool IsPlaceable(GridPlaceable placeable)
         {
-            // No cell of such position exists, return false
-            if (!IsCellExisting(placeable.CellPosition))
-                return false;
-
-            // Overlapping check
-            foreach (GridPlaceable existingPlaceable in _listPlaceables)
+            foreach (Vector2Int cell in placeable.GetOccupiedCells())
             {
-                if (placeable.CellPosition == existingPlaceable.CellPosition)
+                if (!IsCellExisting(GetVisualCellPosition(cell)))
                     return false;
             }
+
+            if (placeable.IsOverlappingWith(_listPlaceables.ToArray()))
+                return false;
 
             return true;
         }
@@ -111,7 +130,9 @@ namespace Game.GridSystem
         private void RevertPlaceableEditModeAffectedCells()
         {
             foreach (Vector2Int previousAffectedCell in _listPlaceableEditModeAffectedCell)
+            {
                 _tilemap.SetTile(previousAffectedCell.ToVector3Int(), _dictionaryTileData[_dictionaryCellInfo[previousAffectedCell].TileId].Tile);
+            }
             _tilemapHighlight.ClearAllTiles();
 
             _listPlaceableEditModeAffectedCell.Clear();
