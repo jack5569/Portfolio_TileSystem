@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Tilemap
+    uniqueID: 3492175031
+    locked: 0
+  - name: GridPlaceable
+    uniqueID: 592515283
+    locked: 0
