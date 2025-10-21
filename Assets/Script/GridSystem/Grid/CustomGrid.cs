@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -54,27 +55,58 @@ namespace Game.GridSystem
         {
             RevertPlaceableEditModeAffectedCells();
 
-            bool isPlaceable = true;
-            foreach (GridPlaceable existingPlaceable in _listPlaceables)
+            if (IsCellExisting(placeable.CellPosition))
             {
-                if (placeable.CellPosition == existingPlaceable.CellPosition)
-                    isPlaceable = false;
-            }
+                // Overlapping check
+                bool isNotOccupied = true;
+                foreach (GridPlaceable existingPlaceable in _listPlaceables)
+                {
+                    if (placeable.CellPosition == existingPlaceable.CellPosition)
+                        isNotOccupied = false;
+                }
 
-            _tilemap.SetTile(placeable.CellPosition.ToVector3Int(), null);
-            _tilemapHighlight.SetTile(placeable.CellPosition.ToVector3Int(), isPlaceable ? _placeableTile : _unplaceableTile);
-            _listPlaceableEditModeAffectedCell.Add(placeable.CellPosition);
+                Vector2Int visualCellPosition = GetVisualCellPosition(placeable.CellPosition);
+                _tilemap.SetTile(visualCellPosition.ToVector3Int(), null);
+                _tilemapHighlight.SetTile(visualCellPosition.ToVector3Int(), isNotOccupied ? _placeableTile : _unplaceableTile);
+                _listPlaceableEditModeAffectedCell.Add(visualCellPosition);
+            }
         }
 
         public void HandlePlaceableEditModeConfirmPlaceablePosition(GridPlaceable placeable)
         {
             RevertPlaceableEditModeAffectedCells();
-            _listPlaceables.Add(placeable);
+            if (IsPlaceable(placeable))
+            {
+                _listPlaceables.Add(placeable);
+            }
+            else
+            {
+                Destroy(placeable.gameObject);
+            }
         }
 
         #endregion
 
         #region Private methods
+
+        private bool IsCellExisting(Vector2Int cellPosition) { return _dictionaryCellInfo.ContainsKey(GetVisualCellPosition(cellPosition)); }
+        private Vector2Int GetVisualCellPosition(Vector2Int cellPosition) { return cellPosition - Vector2Int.one; }
+
+        private bool IsPlaceable(GridPlaceable placeable)
+        {
+            // No cell of such position exists, return false
+            if (!IsCellExisting(placeable.CellPosition))
+                return false;
+
+            // Overlapping check
+            foreach (GridPlaceable existingPlaceable in _listPlaceables)
+            {
+                if (placeable.CellPosition == existingPlaceable.CellPosition)
+                    return false;
+            }
+
+            return true;
+        }
 
         private void RevertPlaceableEditModeAffectedCells()
         {
