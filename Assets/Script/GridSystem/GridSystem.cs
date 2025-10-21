@@ -7,6 +7,8 @@ namespace Game.GridSystem
         [Header("References")]
         [SerializeField] private CustomGrid _grid;
 
+        public ICustomGridClient GridClient => _grid;
+
         public void Load(GridData data)
         {
             _grid.Load(data);
