@@ -33,5 +33,5 @@ This system is a reimplementation of one I originally designed during my profess
 - Personal Framework Utilities
 
 ## Credits
-- [DOTween](https://github.com/Demigiant/dotween)
-- [Isometric Tower Defense Pack](https://artyom-zagorskiy.itch.io/isometric-tower-defense-pack-az)
+- [DOTween](https://github.com/Demigiant/dotween) - Used for basic tweening and animation transitions.
+- [Isometric Tower Defense Pack](https://artyom-zagorskiy.itch.io/isometric-tower-defense-pack-az) - Used for placeholder art assets for runtime demo scene.
